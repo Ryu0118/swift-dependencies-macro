@@ -16,8 +16,8 @@ public struct TestClient {
 public extension DependencyValues {}
 ```
 `@PublicInit` is a Member Macro and provides a public initializer.
-This macro can be applied only to public structs.
-`@Dependencies` is an Extension Macro that can conform TestClient to TestDependencyKey. This macro can also be applied only to structs.
+This macro can be applied only to public structs. <br>
+`@Dependencies` is an Extension Macro that can conform TestClient to TestDependencyKey. This macro can also be applied only to structs. <br>
 `@DependencyValue` is a Member Macro; by using a Macro for the extension of DependencyValues, you can add a property of the type specified in the argument
 
 In this example, the macro is expanded as follows.

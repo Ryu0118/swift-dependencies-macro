@@ -1,4 +1,3 @@
-import PublicInitMacroPlugin
 import Dependencies
 
 @attached(member, names: named(init))

@@ -6,7 +6,7 @@ import XCTest
 final class DependenciesMacroTests: XCTestCase {
     override func invokeTest() {
         withMacroTesting(
-            macros: ["Dependencies": DependenciesMacro.self]
+            macros: ["Dependencies": DependenciesMacro.self, "DependencyValue": DependencyValuesMacro.self]
         ) {
             super.invokeTest()
         }
@@ -23,7 +23,7 @@ final class DependenciesMacroTests: XCTestCase {
             @Dependencies
             class Test {}
             ┬────
-            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            ╰─ 🛑 Dependencies Macro can only be applied to struct.
             """
         }
         assertMacro {
@@ -36,7 +36,7 @@ final class DependenciesMacroTests: XCTestCase {
             @Dependencies
             enum Test {}
             ┬───
-            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            ╰─ 🛑 Dependencies Macro can only be applied to struct.
             """
         }
         assertMacro {
@@ -49,7 +49,7 @@ final class DependenciesMacroTests: XCTestCase {
             @Dependencies
             actor Test {}
             ┬────
-            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            ╰─ 🛑 Dependencies Macro can only be applied to struct.
             """
         }
     }
@@ -98,6 +98,26 @@ final class DependenciesMacroTests: XCTestCase {
                 )
             }
             """#
+        }
+
+        assertMacro {
+            """
+            @DependencyValue(TestClient.self)
+            public extension DependencyValues {}
+            """
+        } matches: {
+            """
+            public extension DependencyValues {
+
+                var testClient: TestClient {
+                    get {
+                        self [TestClient.self]
+                    }
+                    set {
+                        self [TestClient.self] = newValue
+                    }
+                }}
+            """
         }
     }
 }

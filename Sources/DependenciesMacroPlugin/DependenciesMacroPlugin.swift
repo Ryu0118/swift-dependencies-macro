@@ -4,6 +4,7 @@ import SwiftSyntaxMacros
 @main
 struct DependenciesMacroPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        DependenciesMacro.self
+        DependenciesMacro.self,
+        DependencyValuesMacro.self
     ]
 }

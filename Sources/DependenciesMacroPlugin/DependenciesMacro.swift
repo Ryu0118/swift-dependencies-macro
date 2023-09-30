@@ -21,7 +21,6 @@ extension DependenciesMacro: ExtensionMacro {
             .filter { $0.accessorBlock == nil }
         let modifier = declaration.modifiers
             .compactMap { $0.as(DeclModifierSyntax.self)?.name.text }
-            .filter { $0 != "final" }
             .first ?? "internal"
         let arguments = storedPropertyBindings
             .compactMap { $0.pattern.as(IdentifierPatternSyntax.self)?.identifier.text }

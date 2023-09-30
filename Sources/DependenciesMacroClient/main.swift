@@ -4,7 +4,7 @@ import Dependencies
 @PublicInit
 @Dependencies
 public struct TestClient {
-    public var testRequest: @Sendable (_ test: String) async throws -> Void
+    public var request: @Sendable (_ request: String) -> Void
 }
 
 public extension DependencyValues {

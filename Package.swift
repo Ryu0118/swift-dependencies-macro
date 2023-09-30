@@ -5,7 +5,7 @@ import PackageDescription
 import CompilerPluginSupport
 
 let package = Package(
-    name: "DependenciesMacro",
+    name: "swift-dependencies-macro",
     platforms: [
         .macOS(.v10_15),
         .iOS(.v13),

@@ -1,46 +1,103 @@
-import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
+import DependenciesMacro
+import DependenciesMacroPlugin
+import MacroTesting
 import XCTest
 
-// Macro implementations build for the host, so the corresponding module is not available when cross-compiling. Cross-compiled tests may still make use of the macro itself in end-to-end tests.
-#if canImport(DependenciesMacroMacros)
-import DependenciesMacroMacros
-
-let testMacros: [String: Macro.Type] = [
-    "stringify": StringifyMacro.self,
-]
-#endif
-
 final class DependenciesMacroTests: XCTestCase {
-    func testMacro() throws {
-        #if canImport(DependenciesMacroMacros)
-        assertMacroExpansion(
-            """
-            #stringify(a + b)
-            """,
-            expandedSource: """
-            (a + b, "a + b")
-            """,
-            macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
+    override func invokeTest() {
+        withMacroTesting(
+            macros: ["Dependencies": DependenciesMacro.self]
+        ) {
+            super.invokeTest()
+        }
     }
 
-    func testMacroWithStringLiteral() throws {
-        #if canImport(DependenciesMacroMacros)
-        assertMacroExpansion(
+    func testDiagnostic() {
+        assertMacro {
+            """
+            @Dependencies
+            class Test {}
+            """
+        } matches: {
+            """
+            @Dependencies
+            class Test {}
+            ┬────
+            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            """
+        }
+        assertMacro {
+            """
+            @Dependencies
+            enum Test {}
+            """
+        } matches: {
+            """
+            @Dependencies
+            enum Test {}
+            ┬───
+            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            """
+        }
+        assertMacro {
+            """
+            @Dependencies
+            actor Test {}
+            """
+        } matches: {
+            """
+            @Dependencies
+            actor Test {}
+            ┬────
+            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            """
+        }
+    }
+
+    func testMacro() {
+        assertMacro {
+            """
+            @Dependencies
+            public struct TestClient {
+                let a: String
+                let b: () -> Void
+                let c: @Sendable () -> Void
+                let d: @Sendable () async -> Void
+                let e: @Sendable () async throws -> Void
+                let f: @Sendable (String) async throws -> String
+                let g: @Sendable (_ arg: String) async throws -> String
+                var h: @Sendable (_ arg1: String, _ arg2: String) async throws -> String
+                var i: @Sendable (String, Int) async throws -> String
+            }
+            """
+        } matches: {
             #"""
-            #stringify("Hello, \(name)")
-            """#,
-            expandedSource: #"""
-            ("Hello, \(name)", #""Hello, \(name)""#)
-            """#,
-            macros: testMacros
-        )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
+            public struct TestClient {
+                let a: String
+                let b: () -> Void
+                let c: @Sendable () -> Void
+                let d: @Sendable () async -> Void
+                let e: @Sendable () async throws -> Void
+                let f: @Sendable (String) async throws -> String
+                let g: @Sendable (_ arg: String) async throws -> String
+                var h: @Sendable (_ arg1: String, _ arg2: String) async throws -> String
+                var i: @Sendable (String, Int) async throws -> String
+            }
+
+            extension TestClient: TestDependencyKey {
+                public static let testValue = TestClient(
+                    a: unimplemented("\(Self.self).a"),
+                    b: unimplemented("\(Self.self).b"),
+                    c: unimplemented("\(Self.self).c"),
+                    d: unimplemented("\(Self.self).d"),
+                    e: unimplemented("\(Self.self).e"),
+                    f: unimplemented("\(Self.self).f"),
+                    g: unimplemented("\(Self.self).g"),
+                    h: unimplemented("\(Self.self).h"),
+                    i: unimplemented("\(Self.self).i")
+                )
+            }
+            """#
+        }
     }
 }

@@ -1,8 +1,15 @@
 import DependenciesMacro
+import Dependencies
 
-let a = 17
-let b = 25
+@PublicInit
+@Dependencies
+public struct TestClient {
+    public var testRequest: @Sendable (_ test: String) async throws -> Void
+}
 
-let (result, code) = #stringify(a + b)
-
-print("The value \(result) was produced by the code \"\(code)\"")
+public extension DependencyValues {
+    var testClient: TestClient {
+        get { self[TestClient.self] }
+        set { self[TestClient.self] = newValue }
+    }
+}

@@ -6,7 +6,7 @@ import XCTest
 final class DependenciesMacroTests: XCTestCase {
     override func invokeTest() {
         withMacroTesting(
-            macros: ["Dependencies": DependenciesMacro.self, "DependencyValue": DependencyValuesMacro.self]
+            macros: ["Dependencies": DependenciesMacro.self]
         ) {
             super.invokeTest()
         }
@@ -98,26 +98,6 @@ final class DependenciesMacroTests: XCTestCase {
                 )
             }
             """#
-        }
-
-        assertMacro {
-            """
-            @DependencyValue(TestClient.self)
-            public extension DependencyValues {}
-            """
-        } matches: {
-            """
-            public extension DependencyValues {
-
-                var testClient: TestClient {
-                    get {
-                        self [TestClient.self]
-                    }
-                    set {
-                        self [TestClient.self] = newValue
-                    }
-                }}
-            """
         }
     }
 }

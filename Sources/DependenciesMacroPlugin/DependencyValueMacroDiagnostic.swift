@@ -4,6 +4,7 @@ import SwiftDiagnostics
 
 public enum DependencyValuesMacroDiagnostic {
     case notExtension
+    case notDependencyValues
     case invalidArgument
 }
 
@@ -19,6 +20,9 @@ extension DependencyValuesMacroDiagnostic: DiagnosticMessage {
 
         case .invalidArgument:
             "Invalid argument."
+
+        case .notDependencyValues:
+            "DependencyValue Macro can only be applied to extension of DependencyValues"
         }
     }
 
@@ -30,6 +34,9 @@ extension DependencyValuesMacroDiagnostic: DiagnosticMessage {
             MessageID(domain: "DependencyValuesMacroDiagnostic", id: "notExtension")
 
         case .invalidArgument:
+            MessageID(domain: "DependencyValuesMacroDiagnostic", id: "invalidArgument")
+
+        case .notDependencyValues:
             MessageID(domain: "DependencyValuesMacroDiagnostic", id: "invalidArgument")
         }
     }
@@ -45,38 +52,46 @@ public extension DependencyValuesMacro {
             if let actorDecl = declaration.as(ActorDeclSyntax.self) {
                 throw DiagnosticsError(
                     diagnostics: [
-                        DependenciesMacroDiagnostic.notStruct.diagnose(at: actorDecl.actorKeyword)
+                        DependencyValuesMacroDiagnostic.notExtension.diagnose(at: actorDecl.actorKeyword)
                     ]
                 )
             }
             else if let classDecl = declaration.as(ClassDeclSyntax.self) {
                 throw DiagnosticsError(
                     diagnostics: [
-                        DependenciesMacroDiagnostic.notStruct.diagnose(at: classDecl.classKeyword)
+                        DependencyValuesMacroDiagnostic.notExtension.diagnose(at: classDecl.classKeyword)
                     ]
                 )
             }
             else if let enumDecl = declaration.as(EnumDeclSyntax.self) {
                 throw DiagnosticsError(
                     diagnostics: [
-                        DependenciesMacroDiagnostic.notStruct.diagnose(at: enumDecl.enumKeyword)
+                        DependencyValuesMacroDiagnostic.notExtension.diagnose(at: enumDecl.enumKeyword)
                     ]
                 )
             }
             else if let structDecl = declaration.as(StructDeclSyntax.self) {
                 throw DiagnosticsError(
                     diagnostics: [
-                        DependenciesMacroDiagnostic.notStruct.diagnose(at: structDecl.structKeyword)
+                        DependencyValuesMacroDiagnostic.notExtension.diagnose(at: structDecl.structKeyword)
                     ]
                 )
             }
             else {
                 throw DiagnosticsError(
                     diagnostics: [
-                        DependenciesMacroDiagnostic.notStruct.diagnose(at: declaration)
+                        DependencyValuesMacroDiagnostic.notExtension.diagnose(at: declaration)
                     ]
                 )
             }
+        }
+
+        guard extensionDecl.extendedType.as(IdentifierTypeSyntax.self)?.name.text == "DependencyValues" else {
+            throw DiagnosticsError(
+                diagnostics: [
+                    DependencyValuesMacroDiagnostic.notDependencyValues.diagnose(at: extensionDecl.extendedType)
+                ]
+            )
         }
 
         guard case .argumentList(let arguments) = syntax.arguments,
@@ -85,7 +100,7 @@ public extension DependencyValuesMacro {
         else {
             throw DiagnosticsError(
                 diagnostics: [
-                    DependenciesMacroDiagnostic.notStruct.diagnose(at: declaration)
+                    DependencyValuesMacroDiagnostic.invalidArgument.diagnose(at: declaration)
                 ]
             )
         }

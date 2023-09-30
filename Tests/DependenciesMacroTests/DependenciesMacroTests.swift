@@ -23,7 +23,7 @@ final class DependenciesMacroTests: XCTestCase {
             @Dependencies
             class Test {}
             ┬────
-            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            ╰─ 🛑 Dependencies Macro can only be applied to struct.
             """
         }
         assertMacro {
@@ -36,7 +36,7 @@ final class DependenciesMacroTests: XCTestCase {
             @Dependencies
             enum Test {}
             ┬───
-            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            ╰─ 🛑 Dependencies Macro can only be applied to struct.
             """
         }
         assertMacro {
@@ -49,7 +49,7 @@ final class DependenciesMacroTests: XCTestCase {
             @Dependencies
             actor Test {}
             ┬────
-            ╰─ 🛑 PublicInit Macro can only be applied to struct.
+            ╰─ 🛑 Dependencies Macro can only be applied to struct.
             """
         }
     }

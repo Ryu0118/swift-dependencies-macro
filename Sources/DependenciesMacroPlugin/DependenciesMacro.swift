@@ -2,9 +2,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct DependenciesMacro {
-
-}
+public struct DependenciesMacro {}
 
 extension DependenciesMacro: ExtensionMacro {
     public static func expansion(
@@ -40,10 +38,5 @@ extension DependenciesMacro: ExtensionMacro {
         return [
             testDependencyKeyExtension,
         ]
-    }
-}
-extension String {
-    func initialLowerCased() -> String {
-        return self.prefix(1).lowercased() + self.dropFirst()
     }
 }

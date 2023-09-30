@@ -14,7 +14,7 @@ extension DependenciesMacroDiagnostic: DiagnosticMessage {
     public var message: String {
         switch self {
         case .notStruct:
-            "PublicInit Macro can only be applied to struct."
+            "Dependencies Macro can only be applied to struct."
         }
     }
 

@@ -12,7 +12,9 @@ public struct PublicInitMacro: MemberMacro {
     ) throws -> [DeclSyntax] {
         let structDecl = try decodeExpansion(of: node, attachedTo: declaration, in: context)
         let storedPropertyBindings = structDecl.memberBlock.members
-            .compactMap { $0.decl.as(VariableDeclSyntax.self)?.bindings }
+            .compactMap { $0.decl.as(VariableDeclSyntax.self) }
+            .filter { !$0.modifiers.contains { $0.as(DeclModifierSyntax.self)?.name.text == "static" } }
+            .map(\.bindings)
             .flatMap { $0 }
             .filter { $0.accessorBlock == nil }
             .compactMap { (binding: PatternBindingSyntax) -> PatternBindingSyntax? in
@@ -37,6 +39,7 @@ public struct PublicInitMacro: MemberMacro {
                     )
                     return nil
                 }
+
 
                 if let functionType = typeAnnotation.type.as(FunctionTypeSyntax.self) {
                     return binding.with(

@@ -14,7 +14,9 @@ extension DependenciesMacro: ExtensionMacro {
     ) throws -> [ExtensionDeclSyntax] {
         let structDecl = try decodeExpansion(of: node, attachedTo: declaration, in: context)
         let storedPropertyBindings = structDecl.memberBlock.members
-            .compactMap { $0.decl.as(VariableDeclSyntax.self)?.bindings }
+            .compactMap { $0.decl.as(VariableDeclSyntax.self) }
+            .filter { !$0.modifiers.contains { $0.as(DeclModifierSyntax.self)?.name.text == "static" } }
+            .map(\.bindings)
             .flatMap { $0 }
             .filter { $0.accessorBlock == nil }
         let modifier = declaration.modifiers

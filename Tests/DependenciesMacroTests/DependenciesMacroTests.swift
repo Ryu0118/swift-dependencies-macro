@@ -59,6 +59,7 @@ final class DependenciesMacroTests: XCTestCase {
             """
             @Dependencies
             public struct TestClient {
+                static let staticValue = 0
                 let a: String
                 let b: () -> Void
                 let c: @Sendable () -> Void
@@ -73,6 +74,7 @@ final class DependenciesMacroTests: XCTestCase {
         } matches: {
             #"""
             public struct TestClient {
+                static let staticValue = 0
                 let a: String
                 let b: () -> Void
                 let c: @Sendable () -> Void

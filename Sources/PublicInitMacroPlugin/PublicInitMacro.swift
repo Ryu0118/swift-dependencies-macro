@@ -40,7 +40,6 @@ public struct PublicInitMacro: MemberMacro {
                     return nil
                 }
 
-
                 if let functionType = typeAnnotation.type.as(FunctionTypeSyntax.self) {
                     return binding.with(
                         \.typeAnnotation,

@@ -51,5 +51,5 @@ public extension DependencyValues {
 ## Installation
 This library can only be installed from swift package manager.
 ```Swift
-.package(url: "https://github.com/Ryu0118/swift-dependencies-macro", from: "0.2.0")
+.package(url: "https://github.com/Ryu0118/swift-dependencies-macro", from: "0.2.1")
 ```

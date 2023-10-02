@@ -92,6 +92,7 @@ final class PublicInitMacroTests: XCTestCase {
             """
             @PublicInit
             public struct Test {
+                static let staticValue = 0
                 let a: String
                 let b: () -> Void
                 let c: @Sendable () -> Void
@@ -101,11 +102,13 @@ final class PublicInitMacroTests: XCTestCase {
                 let g: @Sendable (_ arg: String) async throws -> String
                 var h: @Sendable (_ arg1: String, _ arg2: String) async throws -> String
                 var i: @Sendable (String, Int) async throws -> String
+                var j: String = ""
             }
             """
         } matches: {
             """
             public struct Test {
+                static let staticValue = 0
                 let a: String
                 let b: () -> Void
                 let c: @Sendable () -> Void
@@ -115,6 +118,7 @@ final class PublicInitMacroTests: XCTestCase {
                 let g: @Sendable (_ arg: String) async throws -> String
                 var h: @Sendable (_ arg1: String, _ arg2: String) async throws -> String
                 var i: @Sendable (String, Int) async throws -> String
+                var j: String = ""
 
                 public init(
                     a: String,
@@ -125,7 +129,8 @@ final class PublicInitMacroTests: XCTestCase {
                     f: @Sendable @escaping (String) async throws -> String,
                     g: @Sendable @escaping (_ arg: String) async throws -> String,
                     h: @Sendable @escaping (_ arg1: String, _ arg2: String) async throws -> String,
-                    i: @Sendable @escaping (String, Int) async throws -> String
+                    i: @Sendable @escaping (String, Int) async throws -> String,
+                    j: String = ""
                 ) {
                     self.a = a
                     self.b = b
@@ -136,6 +141,7 @@ final class PublicInitMacroTests: XCTestCase {
                     self.g = g
                     self.h = h
                     self.i = i
+                    self.j = j
                 }
             }
             """
